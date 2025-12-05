@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Events\PetUpdatedEvent;
 use App\Models\PetState;
 use Carbon\Carbon;
 
@@ -27,7 +28,6 @@ class PetService
         );
     }
 
-// app/Services/PetService.php
 
     public static function pat(?string $user = null): PetState
     {
@@ -38,9 +38,10 @@ class PetService
         $pet->last_pat_user = $user;
         $pet->save();
 
+        event(new PetUpdatedEvent($pet));
+
         return $pet;
     }
-
 
     public static function applyDecay(): PetState
     {
@@ -54,8 +55,13 @@ class PetService
             return $pet;
         }
 
+        $oldPoints = $pet->points;
         $pet->points = max(self::MIN_POINTS, $pet->points - self::DECAY_DELTA);
         $pet->save();
+
+        if ($pet->points !== $oldPoints) {
+            event(new PetUpdatedEvent($pet));
+        }
 
         return $pet;
     }
@@ -76,7 +82,7 @@ class PetService
             return 'neutral';
         }
 
-        if ($points < 300) {
+        if ($points < 210) {
             return 'happy';
         }
 

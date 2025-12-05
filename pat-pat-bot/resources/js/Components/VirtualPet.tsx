@@ -24,32 +24,30 @@ const moodSprite: Record<string, string> = {
     very_happy: veryHappy,
 };
 
+declare global {
+    interface Window {
+        Echo: any;
+    }
+}
+
 export const VirtualPet: React.FC = () => {
     const [pet, setPet] = useState<PetResponse | null>(null);
 
     useEffect(() => {
-        const fetchPet = async () => {
-            try {
-                const res = await fetch("/api/pet", {
-                    headers: {
-                        Accept: "application/json",
-                    },
-                });
-                const data = (await res.json()) as PetResponse;
-                setPet(data);
-            } catch (error) {
-                console.error("Failed to fetch pet state", error);
-            }
+        const channel = window.Echo.channel("pet-state");
+
+        channel.listen(".PetUpdated", (data: PetResponse) => {
+            setPet(data);
+        });
+
+        return () => {
+            window.Echo.leave("pet-state");
         };
-
-        fetchPet();
-        const interval = setInterval(fetchPet, 2000); // poll every 2s
-
-        return () => clearInterval(interval);
     }, []);
 
     if (!pet) {
-        return null; // for OBS overlay, you can show nothing while loading
+        // render nothing until the first event arrives
+        return null;
     }
 
     const spriteSrc = moodSprite[pet.mood] ?? moodSprite["neutral"];
@@ -67,8 +65,8 @@ export const VirtualPet: React.FC = () => {
                 display: "flex",
                 alignItems: "flex-end",
                 justifyContent: "center",
-                background: "transparent", // so OBS can layer it
-                pointerEvents: "none", // so clicks pass through if needed
+                background: "transparent",
+                pointerEvents: "none",
             }}
         >
             <div
@@ -80,18 +78,15 @@ export const VirtualPet: React.FC = () => {
                     padding: "1rem",
                 }}
             >
-                {/* The little guy */}
                 <img
                     src={spriteSrc}
                     alt="Virtual pet"
                     style={{
                         width: "200px",
                         height: "200px",
-                        imageRendering: "pixelated", // if it's pixel art
+                        imageRendering: "pixelated",
                     }}
                 />
-
-                {/* Phrase text */}
                 <div
                     style={{
                         fontFamily: "system-ui, sans-serif",
