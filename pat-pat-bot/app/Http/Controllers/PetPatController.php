@@ -1,14 +1,19 @@
 <?php
 
+// app/Http/Controllers/PetPatController.php
+
 namespace App\Http\Controllers;
 
 use App\Services\PetService;
+use Illuminate\Http\Request;
 
-class PetController extends Controller
+class PetPatController extends Controller
 {
-    public function show()
+    public function store(Request $request)
     {
-        $pet = PetService::getState();
+        $user = $request->string('user')->toString(); // Twitch username
+
+        $pet = PetService::pat($user);
 
         return response()->json([
             'points'      => $pet->points,
@@ -18,4 +23,3 @@ class PetController extends Controller
         ]);
     }
 }
-

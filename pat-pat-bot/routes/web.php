@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\PetPatController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -25,13 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/api/pet', [PetController::class, 'show'])
-    ->name('pet.show');
-
-
 Route::get('/virtual-pet', function () {
     return inertia('VirtualPetPage');
 });
 
+Route::get('/api/pet', [PetController::class, 'show'])->name('pet.show');
+Route::post('/api/pet/pat', [PetPatController::class, 'store']);
 
 require __DIR__.'/auth.php';

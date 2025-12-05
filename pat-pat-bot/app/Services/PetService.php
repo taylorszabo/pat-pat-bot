@@ -27,16 +27,20 @@ class PetService
         );
     }
 
-    public static function pat(): PetState
+// app/Services/PetService.php
+
+    public static function pat(?string $user = null): PetState
     {
         $pet = self::getState();
 
         $pet->points = min(self::MAX_POINTS, $pet->points + self::PAT_DELTA);
         $pet->last_pat_at = now();
+        $pet->last_pat_user = $user;
         $pet->save();
 
         return $pet;
     }
+
 
     public static function applyDecay(): PetState
     {
