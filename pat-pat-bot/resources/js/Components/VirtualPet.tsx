@@ -139,22 +139,33 @@ export const VirtualPet: React.FC = () => {
                     }}
                 />
 
-                {overlayMessage && (
-                    <div
-                        style={{
-                            fontFamily: "system-ui, sans-serif",
-                            fontSize: "1.1rem",
-                            padding: "0.35rem 0.75rem",
-                            borderRadius: "999px",
-                            background: "rgba(0, 0, 0, 0.7)",
-                            color: "white",
-                            whiteSpace: "nowrap",
-                            transition: "opacity 0.3s ease",
-                        }}
-                    >
-                        {overlayMessage}
-                    </div>
-                )}
+                <div
+                    style={{
+                        height: "2.2rem",
+                        marginTop: "0.5rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    {overlayMessage && (
+                        <div
+                            style={{
+                                fontFamily: "system-ui, sans-serif",
+                                fontSize: "1.1rem",
+                                padding: "0.35rem 0.75rem",
+                                borderRadius: "999px",
+                                background: "rgba(0, 0, 0, 0.7)",
+                                color: "white",
+                                whiteSpace: "nowrap",
+                                transition: "opacity 0.3s ease",
+                            }}
+                        >
+                            {overlayMessage}
+                        </div>
+                    )}
+                </div>
+
             </div>
         </div>
     );
