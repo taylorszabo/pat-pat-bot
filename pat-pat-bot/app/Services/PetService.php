@@ -43,11 +43,12 @@ class PetService
         return $pet;
     }
 
+
     public static function applyDecay(): PetState
     {
         $pet = self::getState();
 
-        if (!$pet->last_pat_at instanceof Carbon) {
+        if (!$pet->last_pat_at instanceof \Carbon\Carbon) {
             return $pet;
         }
 
@@ -56,15 +57,22 @@ class PetService
         }
 
         $oldPoints = $pet->points;
+
         $pet->points = max(self::MIN_POINTS, $pet->points - self::DECAY_DELTA);
+
+        if ($pet->points === $oldPoints) {
+            $pet->save();
+            return $pet;
+        }
+
+        $pet->last_pat_user = null;
         $pet->save();
 
-        if ($pet->points !== $oldPoints) {
-            event(new PetUpdatedEvent($pet));
-        }
+        event(new \App\Events\PetUpdatedEvent($pet));
 
         return $pet;
     }
+
 
     public static function getMood(PetState $pet): string
     {

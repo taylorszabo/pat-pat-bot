@@ -36,6 +36,9 @@ declare global {
 export const VirtualPet: React.FC = () => {
     const [pet, setPet] = useState<PetResponse | null>(null);
     const [isPatting, setIsPatting] = useState(false);
+    const [isDecaying, setIsDecaying] = useState(false);
+    const [overlayMessage, setOverlayMessage] = useState<string | null>(null);
+
 
     useEffect(() => {
         fetch("/api/pet")
@@ -45,14 +48,46 @@ export const VirtualPet: React.FC = () => {
 
         const channel = window.Echo.channel("pet-state");
         channel.listen(".PetUpdated", (data: PetResponse) => {
-            if (data.lastPatUser) {
+            // previous points to detect decay
+            const previousPoints = pet?.points ?? null;
+            const wasPat = !!data.lastPatUser;
+            const isDecayEvent =
+                !wasPat &&
+                previousPoints !== null &&
+                data.points < previousPoints;
+
+            if (wasPat) {
+                // 🟡 PAT EVENT
                 setIsPatting(true);
+                setIsDecaying(false);
+
+                setOverlayMessage(
+                    `${data.lastPatUser} gave the little guy a patpat!`
+                );
 
                 setTimeout(() => {
                     setIsPatting(false);
                 }, 1000);
-            }
 
+                setTimeout(() => {
+                    setOverlayMessage(null);
+                }, 2500);
+            } else if (isDecayEvent) {
+                // 🔵 DECAY EVENT
+                setIsDecaying(true);
+                setIsPatting(false);
+
+                setOverlayMessage("The little guy wasn't patted quick enough…");
+
+                // show sad state briefly
+                setTimeout(() => {
+                    setIsDecaying(false);
+                }, 1500);
+
+                setTimeout(() => {
+                    setOverlayMessage(null);
+                }, 2500);
+            }
 
             setPet(data);
         });
@@ -60,7 +95,7 @@ export const VirtualPet: React.FC = () => {
         return () => {
             window.Echo.leave("pet-state");
         };
-    }, []);
+    }, [pet?.points]);
 
     if (!pet) {
         return null;
@@ -68,12 +103,10 @@ export const VirtualPet: React.FC = () => {
 
     const spriteSrc = isPatting
         ? patSprite
-        : moodSprite[pet.mood] ?? moodSprite["neutral"];
-    const lastPatUser = pet.lastPatUser ?? "";
+        : isDecaying
+            ? moodSprite["sad"] // force sad image during decay animation
+            : moodSprite[pet.mood] ?? moodSprite["neutral"];
 
-    const phrase = lastPatUser
-        ? `${lastPatUser} gave the little guy a patpat!`
-        : "Waiting for someone to give the little guy a patpat…";
 
     return (
         <div
@@ -105,19 +138,23 @@ export const VirtualPet: React.FC = () => {
                         imageRendering: "pixelated",
                     }}
                 />
-                <div
-                    style={{
-                        fontFamily: "system-ui, sans-serif",
-                        fontSize: "1.1rem",
-                        padding: "0.35rem 0.75rem",
-                        borderRadius: "999px",
-                        background: "rgba(0, 0, 0, 0.7)",
-                        color: "white",
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    {phrase}
-                </div>
+
+                {overlayMessage && (
+                    <div
+                        style={{
+                            fontFamily: "system-ui, sans-serif",
+                            fontSize: "1.1rem",
+                            padding: "0.35rem 0.75rem",
+                            borderRadius: "999px",
+                            background: "rgba(0, 0, 0, 0.7)",
+                            color: "white",
+                            whiteSpace: "nowrap",
+                            transition: "opacity 0.3s ease",
+                        }}
+                    >
+                        {overlayMessage}
+                    </div>
+                )}
             </div>
         </div>
     );
