@@ -7,6 +7,7 @@ import sad from "../images/sad.png";
 import neutral from "../images/neutral.png";
 import happy from "../images/happy.png";
 import veryHappy from "../images/very_happy.png";
+import pat from "../images/pat.png";
 
 type PetResponse = {
     points: number;
@@ -24,6 +25,8 @@ const moodSprite: Record<string, string> = {
     very_happy: veryHappy,
 };
 
+const patSprite = pat;
+
 declare global {
     interface Window {
         Echo: any;
@@ -32,6 +35,7 @@ declare global {
 
 export const VirtualPet: React.FC = () => {
     const [pet, setPet] = useState<PetResponse | null>(null);
+    const [isPatting, setIsPatting] = useState(false);
 
     useEffect(() => {
         fetch("/api/pet")
@@ -41,6 +45,15 @@ export const VirtualPet: React.FC = () => {
 
         const channel = window.Echo.channel("pet-state");
         channel.listen(".PetUpdated", (data: PetResponse) => {
+            if (data.lastPatUser) {
+                setIsPatting(true);
+
+                setTimeout(() => {
+                    setIsPatting(false);
+                }, 1000);
+            }
+
+
             setPet(data);
         });
 
@@ -50,11 +63,12 @@ export const VirtualPet: React.FC = () => {
     }, []);
 
     if (!pet) {
-        // render nothing until the first event arrives
         return null;
     }
 
-    const spriteSrc = moodSprite[pet.mood] ?? moodSprite["neutral"];
+    const spriteSrc = isPatting
+        ? patSprite
+        : moodSprite[pet.mood] ?? moodSprite["neutral"];
     const lastPatUser = pet.lastPatUser ?? "";
 
     const phrase = lastPatUser
