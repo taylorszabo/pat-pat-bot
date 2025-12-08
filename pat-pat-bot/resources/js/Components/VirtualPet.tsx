@@ -38,7 +38,7 @@ export const VirtualPet: React.FC = () => {
     const [isPatting, setIsPatting] = useState(false);
 
     useEffect(() => {
-        fetch("/pet")
+        fetch("/api/pet")
             .then((res) => res.json())
             .then((data) => setPet(data))
             .catch(console.error);
