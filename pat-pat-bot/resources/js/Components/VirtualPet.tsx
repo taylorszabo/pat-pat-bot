@@ -34,8 +34,12 @@ export const VirtualPet: React.FC = () => {
     const [pet, setPet] = useState<PetResponse | null>(null);
 
     useEffect(() => {
-        const channel = window.Echo.channel("pet-state");
+        fetch("/api/pet")
+            .then((res) => res.json())
+            .then((data) => setPet(data))
+            .catch(console.error);
 
+        const channel = window.Echo.channel("pet-state");
         channel.listen(".PetUpdated", (data: PetResponse) => {
             setPet(data);
         });
