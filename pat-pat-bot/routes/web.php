@@ -30,7 +30,5 @@ Route::get('/virtual-pet', function () {
     return inertia('VirtualPetPage');
 });
 
-Route::get('/api/pet', [PetController::class, 'show'])->name('pet.show');
-Route::post('/api/pet/pat', [PetPatController::class, 'store']);
-
+Route::get('/pet', [PetController::class, 'show'])->name('pet.show');
 require __DIR__.'/auth.php';

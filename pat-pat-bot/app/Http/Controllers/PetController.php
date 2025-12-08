@@ -17,5 +17,6 @@ class PetController extends Controller
             'lastPatUser' => $pet->last_pat_user,
         ]);
     }
+
 }
 
