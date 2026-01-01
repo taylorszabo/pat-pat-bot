@@ -2,12 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 
-import verySad from "../images/very_sad.png";
-import sad from "../images/sad.png";
-import neutral from "../images/neutral.png";
-import happy from "../images/happy.png";
-import veryHappy from "../images/very_happy.png";
-import pat from "../images/pat.png";
+import verySad from "../images/very_sad.gif";
+import sad from "../images/sad.gif";
+import neutral from "../images/neutral.gif";
+import happy from "../images/happy.gif";
+import veryHappy from "../images/very_happy.gif";
+import verySadPat from "../images/very_sad_pat.png";
+import sadPat from "../images/sad_pat.png";
+import neutralHappyPat from "../images/neutral_happy_pat.png";
+import veryHappyPat from "../images/very_happy_pat.png";
 
 type PetResponse = {
     points: number;
@@ -17,7 +20,7 @@ type PetResponse = {
 };
 
 
-const moodSprite: Record<string, string> = {
+const idleSprites: Record<string, string> = {
     very_sad: verySad,
     sad: sad,
     neutral: neutral,
@@ -25,7 +28,13 @@ const moodSprite: Record<string, string> = {
     very_happy: veryHappy,
 };
 
-const patSprite = pat;
+const patSprites: Record<string, string> = {
+    very_sad: verySadPat,
+    sad: sadPat,
+    neutral: neutralHappyPat,
+    happy: neutralHappyPat,
+    very_happy: veryHappyPat,
+};
 
 declare global {
     interface Window {
@@ -101,12 +110,14 @@ export const VirtualPet: React.FC = () => {
         return null;
     }
 
-    const spriteSrc = isPatting
-        ? patSprite
-        : isDecaying
-            ? moodSprite["sad"] // force sad image during decay animation
-            : moodSprite[pet.mood] ?? moodSprite["neutral"];
+    const mood = pet.mood in idleSprites ? pet.mood : "neutral";
 
+    const spriteSrc =
+        isPatting
+            ? patSprites[mood]
+            : isDecaying
+                ? idleSprites["sad"] // force sad idle on decay
+                : idleSprites[mood];
 
     return (
         <div
@@ -136,6 +147,7 @@ export const VirtualPet: React.FC = () => {
                         width: "200px",
                         height: "200px",
                         imageRendering: "pixelated",
+                        transform: isDecaying ? "translateY(2px)" : "none"
                     }}
                 />
 

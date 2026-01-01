@@ -90,7 +90,7 @@ class PetService
             return 'neutral';
         }
 
-        if ($points < 210) {
+        if ($points < 250) {
             return 'happy';
         }
 

@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\PetController;
-use App\Http\Controllers\PetPatController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
