@@ -121,7 +121,34 @@ export const VirtualPet: React.FC = () => {
 
     return (
         <div>
-            <a href="/auth/twitch/redirect">Login with Twitch</a>
+            <a
+                href="/auth/twitch/redirect"
+                style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.6rem",
+                    padding: "0.75rem 1.25rem",
+                    margin: "1.25rem",
+                    backgroundColor: "#9146FF",
+                    color: "#fff",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    borderRadius: "0.5rem",
+                    textDecoration: "none",
+                    boxShadow: "0 4px 12px rgba(145, 70, 255, 0.35)",
+                    transition: "background-color 0.2s ease, transform 0.15s ease",
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#772CE8";
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#9146FF";
+                    e.currentTarget.style.transform = "translateY(0)";
+                }}
+            >
+                Connect with Twitch
+            </a>
             <div
                 style={{
                     width: "100vw",
