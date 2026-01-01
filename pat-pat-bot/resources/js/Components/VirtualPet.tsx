@@ -120,64 +120,66 @@ export const VirtualPet: React.FC = () => {
                 : idleSprites[mood];
 
     return (
-        <div
-            style={{
-                width: "100vw",
-                height: "100vh",
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "center",
-                background: "transparent",
-                pointerEvents: "none",
-            }}
-        >
+        <div>
+            <a href="/auth/twitch/redirect">Login with Twitch</a>
             <div
                 style={{
+                    width: "100vw",
+                    height: "100vh",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "1rem",
+                    alignItems: "flex-end",
+                    justifyContent: "center",
+                    background: "transparent",
+                    pointerEvents: "none",
                 }}
             >
-                <img
-                    src={spriteSrc}
-                    alt="Virtual pet"
-                    style={{
-                        width: "200px",
-                        height: "200px",
-                        imageRendering: "pixelated",
-                        transform: isDecaying ? "translateY(2px)" : "none"
-                    }}
-                />
-
                 <div
                     style={{
-                        height: "2.2rem",
-                        marginTop: "0.5rem",
                         display: "flex",
+                        flexDirection: "column",
                         alignItems: "center",
-                        justifyContent: "center",
+                        gap: "0.5rem",
+                        padding: "1rem",
                     }}
                 >
-                    {overlayMessage && (
-                        <div
-                            style={{
-                                fontFamily: "system-ui, sans-serif",
-                                fontSize: "1.1rem",
-                                padding: "0.35rem 0.75rem",
-                                borderRadius: "999px",
-                                background: "rgba(0, 0, 0, 0.7)",
-                                color: "white",
-                                whiteSpace: "nowrap",
-                                transition: "opacity 0.3s ease",
-                            }}
-                        >
-                            {overlayMessage}
-                        </div>
-                    )}
-                </div>
+                    <img
+                        src={spriteSrc}
+                        alt="Virtual pet"
+                        style={{
+                            width: "200px",
+                            height: "200px",
+                            imageRendering: "pixelated",
+                            transform: isDecaying ? "translateY(2px)" : "none"
+                        }}
+                    />
 
+                    <div
+                        style={{
+                            height: "2.2rem",
+                            marginTop: "0.5rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        {overlayMessage && (
+                            <div
+                                style={{
+                                    fontFamily: "system-ui, sans-serif",
+                                    fontSize: "1.1rem",
+                                    padding: "0.35rem 0.75rem",
+                                    borderRadius: "999px",
+                                    background: "rgba(0, 0, 0, 0.7)",
+                                    color: "white",
+                                    whiteSpace: "nowrap",
+                                    transition: "opacity 0.3s ease",
+                                }}
+                            >
+                                {overlayMessage}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
