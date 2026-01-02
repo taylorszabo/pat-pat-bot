@@ -55,10 +55,19 @@ export const VirtualPet: React.FC = () => {
             .then((res) => res.json())
             .then((data) => setPet(data))
             .catch(console.error);
+        console.log("Echo instance:", window.Echo);
+        try {
+            const p = window.Echo.connector?.pusher;
+            console.log("Pusher:", p);
+            p?.connection?.bind("connected", () => console.log("✅ Pusher connected"));
+            p?.connection?.bind("error", (err: any) => console.log("❌ Pusher error", err));
+            p?.connection?.bind("state_change", (states: any) => console.log("🔁 Pusher state", states));
+        } catch (e) {
+            console.log("No pusher connector?", e);
+        }
 
         const channel = window.Echo.channel("pet-state");
         channel.listen(".PetUpdated", (data: PetResponse) => {
-            console.log("PetUpdated payload:", data);
             const previousPoints = pet?.points ?? null;
             const wasPat = !!data.lastPatUser;
             const isDecayEvent =
