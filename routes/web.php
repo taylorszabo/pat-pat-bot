@@ -37,12 +37,5 @@ Route::get('/auth/twitch/callback', [TwitchAuthController::class, 'callback'])->
 Route::post('/twitch/disconnect', [TwitchConnectionController::class, 'disconnect'])
     ->name('twitch.disconnect');
 
-Route::get('/debug-twitch', function () {
-    return [
-        'services_twitch_client_id' => config('services.twitch.client_id'),
-        'services_twitch_redirect'  => config('services.twitch.redirect'),
-        'env_twitch_redirect'       => env('TWITCH_REDIRECT_URI'),
-    ];
-});
 
 require __DIR__.'/auth.php';

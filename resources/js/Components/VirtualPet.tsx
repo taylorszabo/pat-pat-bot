@@ -58,7 +58,7 @@ export const VirtualPet: React.FC = () => {
 
         const channel = window.Echo.channel("pet-state");
         channel.listen(".PetUpdated", (data: PetResponse) => {
-            // previous points to detect decay
+            console.log("PetUpdated payload:", data);
             const previousPoints = pet?.points ?? null;
             const wasPat = !!data.lastPatUser;
             const isDecayEvent =
