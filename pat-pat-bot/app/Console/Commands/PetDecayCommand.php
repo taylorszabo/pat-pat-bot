@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\TwitchChannel;
 use Illuminate\Console\Command;
 use App\Services\PetService;
+
 
 class PetDecayCommand extends Command
 {
@@ -12,6 +14,11 @@ class PetDecayCommand extends Command
 
     public function handle(): int
     {
+        if (!TwitchChannel::where('connected', true)->exists()) {
+            $this->info('No connected channels. Skipping decay.');
+            return self::SUCCESS;
+        }
+
         $petBefore = PetService::getState();
         $pointsBefore = $petBefore->points;
 
