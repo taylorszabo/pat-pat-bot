@@ -36,6 +36,7 @@ const patSprites: Record<string, string> = {
     very_happy: veryHappyPat,
 };
 
+
 declare global {
     interface Window {
         Echo: any;
@@ -120,92 +121,62 @@ export const VirtualPet: React.FC = () => {
                 : idleSprites[mood];
 
     return (
-        <div>
-            <a
-                href="/auth/twitch/redirect"
-                style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.6rem",
-                    padding: "0.75rem 1.25rem",
-                    margin: "1.25rem",
-                    backgroundColor: "#9146FF",
-                    color: "#fff",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    borderRadius: "0.5rem",
-                    textDecoration: "none",
-                    boxShadow: "0 4px 12px rgba(145, 70, 255, 0.35)",
-                    transition: "background-color 0.2s ease, transform 0.15s ease",
-                }}
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#772CE8";
-                    e.currentTarget.style.transform = "translateY(-1px)";
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#9146FF";
-                    e.currentTarget.style.transform = "translateY(0)";
-                }}
-            >
-                Connect with Twitch
-            </a>
+        <div
+            style={{
+                width: "100vw",
+                height: "100vh",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+                background: "transparent",
+                pointerEvents: "none",
+            }}
+        >
             <div
                 style={{
-                    width: "100vw",
-                    height: "100vh",
                     display: "flex",
-                    alignItems: "flex-end",
-                    justifyContent: "center",
-                    background: "transparent",
-                    pointerEvents: "none",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    padding: "1rem",
                 }}
             >
+                <img
+                    src={spriteSrc}
+                    alt="Virtual pet"
+                    style={{
+                        width: "200px",
+                        height: "200px",
+                        imageRendering: "pixelated",
+                        transform: isDecaying ? "translateY(2px)" : "none"
+                    }}
+                />
+
                 <div
                     style={{
+                        height: "2.2rem",
+                        marginTop: "0.5rem",
                         display: "flex",
-                        flexDirection: "column",
                         alignItems: "center",
-                        gap: "0.5rem",
-                        padding: "1rem",
+                        justifyContent: "center",
                     }}
                 >
-                    <img
-                        src={spriteSrc}
-                        alt="Virtual pet"
-                        style={{
-                            width: "200px",
-                            height: "200px",
-                            imageRendering: "pixelated",
-                            transform: isDecaying ? "translateY(2px)" : "none"
-                        }}
-                    />
-
-                    <div
-                        style={{
-                            height: "2.2rem",
-                            marginTop: "0.5rem",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        {overlayMessage && (
-                            <div
-                                style={{
-                                    fontFamily: "system-ui, sans-serif",
-                                    fontSize: "1.1rem",
-                                    padding: "0.35rem 0.75rem",
-                                    borderRadius: "999px",
-                                    background: "rgba(0, 0, 0, 0.7)",
-                                    color: "white",
-                                    whiteSpace: "nowrap",
-                                    transition: "opacity 0.3s ease",
-                                }}
-                            >
-                                {overlayMessage}
-                            </div>
-                        )}
-                    </div>
+                    {overlayMessage && (
+                        <div
+                            style={{
+                                fontFamily: "system-ui, sans-serif",
+                                fontSize: "1.1rem",
+                                padding: "0.35rem 0.75rem",
+                                borderRadius: "999px",
+                                background: "rgba(0, 0, 0, 0.7)",
+                                color: "white",
+                                whiteSpace: "nowrap",
+                                transition: "opacity 0.3s ease",
+                            }}
+                        >
+                            {overlayMessage}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

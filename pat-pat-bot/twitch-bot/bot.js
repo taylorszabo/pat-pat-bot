@@ -73,6 +73,7 @@ client.on("message", async (channel, tags, message, self) => {
                 { headers: { "X-BOT-KEY": process.env.BOT_API_KEY } }
             );
 
+            client.say(channel, `${username} gave the little guy a patpat!`);
         } catch (err) {
             console.error("pat error:", err?.message ?? err);
         }

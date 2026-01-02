@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TwitchChannel;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -14,7 +15,7 @@ class TwitchAuthController extends Controller
             ->redirect();
     }
 
-    public function callback(): RedirectResponse
+    public function callback(Request $request): RedirectResponse
     {
         $twitchUser = Socialite::driver('twitch')->user();
 
@@ -33,6 +34,8 @@ class TwitchAuthController extends Controller
                 'connected' => true,
             ]
         );
+
+        $request->session()->put('twitch_channel_name', $channel);
 
         return redirect('/')->with('status', "Connected PatPat bot for #{$channel}!");
     }
