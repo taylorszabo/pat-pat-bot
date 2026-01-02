@@ -37,4 +37,12 @@ Route::get('/auth/twitch/callback', [TwitchAuthController::class, 'callback'])->
 Route::post('/twitch/disconnect', [TwitchConnectionController::class, 'disconnect'])
     ->name('twitch.disconnect');
 
+Route::get('/debug-url', function () {
+    return [
+        'APP_URL' => env('APP_URL'),
+        'config_app_url' => config('app.url'),
+        'url_root' => url('/'),
+    ];
+});
+
 require __DIR__.'/auth.php';
