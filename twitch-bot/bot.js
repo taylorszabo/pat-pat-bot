@@ -80,7 +80,7 @@ client.on("message", async (channel, tags, message, self) => {
     const username = (tags.username || "").toLowerCase();
     const cmd = message.trim().toLowerCase();
 
-    if (cmd === "!pat") {
+    if (cmd === "!pat" || cmd === "!pet") {
         const now = Date.now();
 
         const lastPatAt = lastPatAtByChannel.get(channel) ?? 0;
@@ -133,7 +133,7 @@ client.on("message", async (channel, tags, message, self) => {
     if (cmd === "!patpat") {
         client.say(
             channel,
-            "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat so much!"
+            "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat every 30 secs!"
         );
     }
 });
