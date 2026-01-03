@@ -129,6 +129,15 @@ client.on("message", async (channel, tags, message, self) => {
             console.error("mood error:", err?.message ?? err);
         }
     }
+
+    if (cmd === "!patpat") {
+        client.say(
+            channel,
+            "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat so much!"
+        );
+    }
 });
+
+
 
 client.connect().catch(console.error);
