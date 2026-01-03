@@ -79,6 +79,7 @@ client.on("message", async (channel, tags, message, self) => {
             client.say(channel, `${username} gave the little guy a patpat!`);
         } catch (err) {
             console.error("pat error:", err?.message ?? err);
+            client.say(channel, err?.message ?? err);
         }
     }
 
