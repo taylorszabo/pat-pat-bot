@@ -120,16 +120,17 @@ export const VirtualPet: React.FC = () => {
     return (
         <div
             style={{
-                width: "100vw",
-                height: "100vh",
+                position: "fixed",
+                inset: 0,
                 display: "flex",
                 alignItems: "flex-end",
                 justifyContent: "center",
                 background: "transparent",
                 pointerEvents: "none",
+                zIndex: 10,
             }}
         >
-            <div
+        <div
                 style={{
                     display: "flex",
                     flexDirection: "column",
