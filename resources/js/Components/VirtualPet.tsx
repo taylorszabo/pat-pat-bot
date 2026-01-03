@@ -157,6 +157,7 @@ export const VirtualPet: React.FC = () => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        transform: "translateY(-2rem)",
                     }}
                 >
                     {overlayMessage && (
