@@ -5,8 +5,7 @@ namespace App\Services;
 
 use App\Events\PetUpdatedEvent;
 use App\Models\PetState;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+
 
 class PetService
 {
@@ -39,9 +38,8 @@ class PetService
         $pet->last_pat_user = $user;
         $pet->save();
 
-        Log::info('Dispatching PetUpdated', ['user' => $user ?? null]);
         event(new PetUpdatedEvent($pet));
-        Log::info('Dispatching PetUpdated');
+
         return $pet;
     }
 

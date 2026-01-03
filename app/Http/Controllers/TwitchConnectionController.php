@@ -10,7 +10,6 @@ class TwitchConnectionController extends Controller
 {
     public function disconnect(Request $request): RedirectResponse
     {
-        // ✅ correct session key (no semicolon)
         $channel = $request->session()->get('twitch_channel_name');
 
         if ($channel) {

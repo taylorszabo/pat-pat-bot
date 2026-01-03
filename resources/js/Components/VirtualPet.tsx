@@ -66,7 +66,6 @@ export const VirtualPet: React.FC = () => {
                 data.points < previousPoints;
 
             if (wasPat) {
-                // 🟡 PAT EVENT
                 setIsPatting(true);
                 setIsDecaying(false);
 
@@ -83,13 +82,11 @@ export const VirtualPet: React.FC = () => {
                     setOverlayMessage(null);
                 }, 2500);
             } else if (isDecayEvent) {
-                // 🔵 DECAY EVENT
                 setIsDecaying(true);
                 setIsPatting(false);
 
                 setOverlayMessage("The little guy wasn't patted quick enough…");
 
-                // show sad state briefly
                 setTimeout(() => {
                     setIsDecaying(false);
                 }, 1500);
@@ -117,7 +114,7 @@ export const VirtualPet: React.FC = () => {
         isPatting
             ? patSprites[mood]
             : isDecaying
-                ? idleSprites["sad"] // force sad idle on decay
+                ? idleSprites["sad"]
                 : idleSprites[mood];
 
     return (

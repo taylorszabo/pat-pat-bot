@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\PetState;
+use App\Services\PetService;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
@@ -31,8 +32,8 @@ class PetUpdatedEvent implements ShouldBroadcast
     {
         return [
             'points'      => $this->pet->points,
-            'mood'        => app(\App\Services\PetService::class)::getMood($this->pet),
-            'maxPoints'   => \App\Services\PetService::MAX_POINTS,
+            'mood'        => app(PetService::class)::getMood($this->pet),
+            'maxPoints'   => PetService::MAX_POINTS,
             'lastPatUser' => $this->pet->last_pat_user,
         ];
     }

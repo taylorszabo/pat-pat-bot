@@ -12,7 +12,7 @@ const client = new tmi.Client({
         username: process.env.TWITCH_USERNAME,
         password: process.env.TWITCH_OAUTH,
     },
-    channels: [], // start empty; we will join dynamically
+    channels: [],
 });
 
 const joined = new Set();
@@ -44,7 +44,6 @@ async function syncChannels() {
             }
         }
 
-        // PART removed ones
         for (const chan of Array.from(joined)) {
             if (!desired.has(chan)) {
                 await client.part(chan);
@@ -58,7 +57,7 @@ async function syncChannels() {
 }
 
 client.on("connected", async () => {
-    console.log(`🤖 Connected as ${process.env.TWITCH_USERNAME}`);
+    console.log(`Connected as ${process.env.TWITCH_USERNAME}`);
     await syncChannels();
     setInterval(syncChannels, 15000);
 });
