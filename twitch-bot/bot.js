@@ -24,6 +24,25 @@ const SPAM_MSG_COOLDOWN_MS = 10_000;
 const lastPatAtByUser = new Map();     // key: `${channel}:${username}` -> timestamp
 const lastSpamMsgAtByUser = new Map(); // key: `${channel}:${username}` -> timestamp
 
+const SAY_MIN_INTERVAL_MS = 1200; // ~1.2s between bot messages (safe)
+let lastSayAt = 0;
+const sayQueue = [];
+
+function queueSay(channel, text) {
+    sayQueue.push({ channel, text });
+}
+
+setInterval(() => {
+    if (sayQueue.length === 0) return;
+
+    const now = Date.now();
+    if (now - lastSayAt < SAY_MIN_INTERVAL_MS) return;
+
+    const { channel, text } = sayQueue.shift();
+    client.say(channel, text).catch(() => {});
+    lastSayAt = now;
+}, 200);
+
 
 function sleep(ms) {
     return new Promise((r) => setTimeout(r, ms));
@@ -89,7 +108,7 @@ client.on("message", async (channel, tags, message, self) => {
 
             if (warnLeft === 0) {
                 lastSpamMsgAtByUser.set(userKey, now);
-                client.say(
+                queueSay(
                     channel,
                     `⏳ ${username}, slow down! You can pat again in ${Math.ceil(left / 1000)}s.`
                 );
@@ -106,7 +125,7 @@ client.on("message", async (channel, tags, message, self) => {
                 { headers: { "X-BOT-KEY": process.env.BOT_API_KEY } }
             );
 
-            client.say(channel, `${username} gave the little guy a patpat!`);
+            queueSay(channel, `${username} gave the little guy a patpat!`);
         } catch (err) {
             console.error("pat error:", err?.message ?? err);
 
@@ -125,14 +144,14 @@ client.on("message", async (channel, tags, message, self) => {
             const { points, mood, maxPoints } = res.data;
             const moodNice = String(mood).replace("_", " ");
 
-            client.say(channel, `The little guy is ${moodNice} at ${points}/${maxPoints}.`);
+            queueSay(channel, `The little guy is ${moodNice} at ${points}/${maxPoints}.`);
         } catch (err) {
             console.error("mood error:", err?.message ?? err);
         }
     }
 
     if (cmd === "!patpat") {
-        client.say(
+        queueSay(
             channel,
             "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat every 15 secs!"
         );
