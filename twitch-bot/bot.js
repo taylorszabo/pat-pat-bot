@@ -20,11 +20,10 @@ const joined = new Set();
 const PAT_COOLDOWN_MS = 15_000;
 const SPAM_MSG_COOLDOWN_MS = 10_000;
 
-// per-channel timers
-const lastPatAtByUser = new Map();     // key: `${channel}:${username}` -> timestamp
-const lastSpamMsgAtByUser = new Map(); // key: `${channel}:${username}` -> timestamp
+const lastPatAtByUser = new Map();
+const lastSpamMsgAtByUser = new Map();
 
-const SAY_MIN_INTERVAL_MS = 1200; // ~1.2s between bot messages (safe)
+const SAY_MIN_INTERVAL_MS = 1200;
 let lastSayAt = 0;
 const sayQueue = [];
 
@@ -95,9 +94,9 @@ client.on("message", async (channel, tags, message, self) => {
     const username = (tags.username || "").toLowerCase();
     const cmd = message.trim().toLowerCase();
 
-    if (cmd === "!pat") {
+    if (cmd === "!pat" || cmd === "!pet" ) {
         const now = Date.now();
-        const userKey = `${channel}:${username}`; // ✅ per-user cooldown
+        const userKey = `${channel}:${username}`;
 
         const lastPatAt = lastPatAtByUser.get(userKey) ?? 0;
         const left = Math.max(0, PAT_COOLDOWN_MS - (now - lastPatAt));
@@ -110,7 +109,7 @@ client.on("message", async (channel, tags, message, self) => {
                 lastSpamMsgAtByUser.set(userKey, now);
                 queueSay(
                     channel,
-                    `⏳ ${username}, slow down! You can pat again in ${Math.ceil(left / 1000)}s.`
+                    `${username}, slow down! You can pat again in ${Math.ceil(left / 1000)}s.`
                 );
             }
             return;
