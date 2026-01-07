@@ -17,17 +17,13 @@ const client = new tmi.Client({
 
 const joined = new Set();
 
-const PAT_COOLDOWN_MS = 30_000;
+const PAT_COOLDOWN_MS = 15_000;
 const SPAM_MSG_COOLDOWN_MS = 10_000;
 
 // per-channel timers
-const lastPatAtByChannel = new Map();     // channel -> timestamp
-const lastSpamMsgAtByChannel = new Map(); // channel -> timestamp
+const lastPatAtByUser = new Map();     // key: `${channel}:${username}` -> timestamp
+const lastSpamMsgAtByUser = new Map(); // key: `${channel}:${username}` -> timestamp
 
-function msLeft(now, last, cooldown) {
-    const left = cooldown - (now - last);
-    return left > 0 ? left : 0;
-}
 
 function sleep(ms) {
     return new Promise((r) => setTimeout(r, ms));
@@ -80,24 +76,28 @@ client.on("message", async (channel, tags, message, self) => {
     const username = (tags.username || "").toLowerCase();
     const cmd = message.trim().toLowerCase();
 
-    if (cmd === "!pat" || cmd === "!pet") {
+    if (cmd === "!pat") {
         const now = Date.now();
+        const userKey = `${channel}:${username}`; // ✅ per-user cooldown
 
-        const lastPatAt = lastPatAtByChannel.get(channel) ?? 0;
-        const left = msLeft(now, lastPatAt, PAT_COOLDOWN_MS);
+        const lastPatAt = lastPatAtByUser.get(userKey) ?? 0;
+        const left = Math.max(0, PAT_COOLDOWN_MS - (now - lastPatAt));
 
         if (left > 0) {
-            const lastWarnAt = lastSpamMsgAtByChannel.get(channel) ?? 0;
-            const warnLeft = msLeft(now, lastWarnAt, SPAM_MSG_COOLDOWN_MS);
+            const lastWarnAt = lastSpamMsgAtByUser.get(userKey) ?? 0;
+            const warnLeft = Math.max(0, SPAM_MSG_COOLDOWN_MS - (now - lastWarnAt));
 
             if (warnLeft === 0) {
-                lastSpamMsgAtByChannel.set(channel, now);
-                client.say(channel, `PatPat is on cooldown - ${Math.ceil(left / 1000)}s left.`);
+                lastSpamMsgAtByUser.set(userKey, now);
+                client.say(
+                    channel,
+                    `⏳ ${username}, slow down! You can pat again in ${Math.ceil(left / 1000)}s.`
+                );
             }
             return;
         }
 
-        lastPatAtByChannel.set(channel, now);
+        lastPatAtByUser.set(userKey, now);
 
         try {
             await axios.post(
@@ -110,9 +110,10 @@ client.on("message", async (channel, tags, message, self) => {
         } catch (err) {
             console.error("pat error:", err?.message ?? err);
 
-            lastPatAtByChannel.delete(channel);
+            lastPatAtByUser.delete(userKey);
         }
     }
+
 
 
     if (cmd === "!mood") {
@@ -133,7 +134,7 @@ client.on("message", async (channel, tags, message, self) => {
     if (cmd === "!patpat") {
         client.say(
             channel,
-            "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat every 30 secs!"
+            "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat every 15 secs!"
         );
     }
 });
