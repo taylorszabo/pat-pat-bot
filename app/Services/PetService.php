@@ -96,4 +96,19 @@ class PetService
 
         return 'very_happy';
     }
+
+    public static function resetToNeutral()
+    {
+        $pet = self::getState();
+
+        $pet->points = 150;
+        $pet->last_pat_user = null;
+        $pet->last_pat_at = null;
+        $pet->save();
+
+        event(new \App\Events\PetUpdatedEvent($pet));
+
+        return $pet;
+    }
+
 }

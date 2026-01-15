@@ -155,6 +155,28 @@ client.on("message", async (channel, tags, message, self) => {
             "PatPat is your own tiny virtual littly guy! Use !pat to give them pats and raise their happiness :) If nobody pats, they get sad :( But be gentle, you can only pat every 15 secs!"
         );
     }
+
+    if (cmd === "!reset") {
+        const isMod = tags.mod === true;
+        const isBroadcaster = tags.badges && tags.badges.broadcaster === "1";
+
+        if (!isMod && !isBroadcaster) {
+            return;
+        }
+
+        try {
+            await axios.post(
+                process.env.LARAVEL_RESET_URL,
+                {},
+                { headers: { "X-BOT-KEY": process.env.BOT_API_KEY } }
+            );
+
+            queueSay(channel, "The little guy is back to neutral.");
+        } catch (err) {
+            console.error("reset error:", err?.message ?? err);
+        }
+    }
+
 });
 
 
